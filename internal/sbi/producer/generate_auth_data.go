@@ -278,7 +278,6 @@ func GenerateAuthDataProcedure(authInfoRequest models.AuthenticationInfoRequest,
 			if err != nil {
 
 				// Return ProblemDetails following opcStr decode error
-				// Return ProblemDetails following opStr decode error
 				problemDetails = &models.ProblemDetails{
 					Status: http.StatusForbidden,
 					Cause:  authenticationRejected,
@@ -310,7 +309,16 @@ func GenerateAuthDataProcedure(authInfoRequest models.AuthenticationInfoRequest,
 		if hasK && hasOP {
 			opc, err = milenage.GenerateOPC(k, op)
 			if err != nil {
+
+				// Return ProblemDetails following GenerateOPC error
+				problemDetails = &models.ProblemDetails{
+					Status: http.StatusForbidden,
+					Cause:  authenticationRejected,
+					Detail: err.Error(),
+				}
+
 				logger.UeauLog.Errorln("milenage GenerateOPC err:", err)
+				return nil, problemDetails
 			}
 		} else {
 			problemDetails = &models.ProblemDetails{
