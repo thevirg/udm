@@ -243,7 +243,7 @@ func GenerateAuthDataProcedure(authInfoRequest models.AuthenticationInfoRequest,
 				op, err = hex.DecodeString(opStr)
 				if err != nil {
 
-					// Return ProblemDetails following opstr decode error
+					// Return ProblemDetails following opStr decode error
 					problemDetails = &models.ProblemDetails{
 						Status: http.StatusForbidden,
 						Cause:  authenticationRejected,
@@ -276,7 +276,17 @@ func GenerateAuthDataProcedure(authInfoRequest models.AuthenticationInfoRequest,
 		if len(opcStr) == opcStrLen {
 			opc, err = hex.DecodeString(opcStr)
 			if err != nil {
+
+				// Return ProblemDetails following opcStr decode error
+				// Return ProblemDetails following opStr decode error
+				problemDetails = &models.ProblemDetails{
+					Status: http.StatusForbidden,
+					Cause:  authenticationRejected,
+					Detail: err.Error(),
+				}
+
 				logger.UeauLog.Errorln("err:", err)
+				return nil, problemDetails
 			} else {
 				hasOPC = true
 			}
