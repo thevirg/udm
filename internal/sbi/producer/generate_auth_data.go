@@ -204,7 +204,16 @@ func GenerateAuthDataProcedure(authInfoRequest models.AuthenticationInfoRequest,
 		if len(kStr) == keyStrLen {
 			k, err = hex.DecodeString(kStr)
 			if err != nil {
+
+				// Return ProblemDetails following key decode error
+				problemDetails = &models.ProblemDetails{
+					Status: http.StatusForbidden,
+					Cause:  authenticationRejected,
+					Detail: err.Error(),
+				}
+
 				logger.UeauLog.Errorln("err:", err)
+				return nil, problemDetails
 			} else {
 				hasK = true
 			}
